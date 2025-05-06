@@ -1,0 +1,7 @@
+{
+  "rubric_guided": "Use the rubric below to teach {topic}:\n• Definition\n• Core mechanism\n• Real-world analogy\n• 2 FAQ & answers\nRespond in that exact order.",
+  "two_step_self_check": "Please answer in this format:\nSTEP 1 – Draft: explanation of {topic}.\nSTEP 2 – Critique and revise.",
+  "role_assignment": "You are a top professor. Explain {topic} to a 12-year-old.",
+  "story_mode": "Explain {topic} as a short sci-fi story (<250 words) in which an android discovers the concept.",
+  "compare_contrast": "Teach {topic} by contrasting it with a misconception. Table: Correct vs Misconception. Then summary."
+}
