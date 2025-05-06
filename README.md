@@ -2,45 +2,140 @@
 
 A high-efficiency prompt engineering and testing tool designed to find the most effective prompt strategies for any given topic using OpenAI models.
 
+## About
+
+Prompt Puppetry automates the process of finding the best prompt structures for getting high-quality responses from large language models. It tests multiple prompt strategies in parallel, scores the responses, and identifies the most effective approaches.
+
 ## Features
-- Async batch prompt evaluation
-- Auto-scoring of outputs based on quality heuristics
-- SQLite database logging
-- Smart early-exit when a good prompt is found
-- API key loaded from `.env`, `~/.zshrc`, or environment
+
+- **Async Batch Processing**: Test multiple prompt variants simultaneously
+- **Smart Scoring System**: Evaluate responses based on content quality signals
+- **Early Success Detection**: Stop testing when a high-scoring prompt is found
+- **Multiple Strategy Testing**: Compare different prompting approaches
+- **SQLite Logging**: Store all results for later analysis
+- **Flexible API Key Detection**: Load keys from environment variables, .env file, or ~/.zshrc
 
 ## Installation
+
+### Using pip (Python 3.9+ recommended)
+
 ```bash
-pip install openai python-dotenv
+# Clone the repository
+git clone https://github.com/migdam/prompt-puppetry.git
+cd prompt-puppetry
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
+### Using conda
+
+```bash
+# Clone the repository
+git clone https://github.com/migdam/prompt-puppetry.git
+cd prompt-puppetry
+
+# Create and activate conda environment
+conda env create -f environment.yml
+conda activate prompt-puppetry
+```
+
+## Setup
+
+1. Ensure you have an OpenAI API key:
+   - Set as environment variable: `export OPENAI_API_KEY=your-key-here`
+   - Add to .env file: `OPENAI_API_KEY=your-key-here`
+   - Add to your ~/.zshrc: `export OPENAI_API_KEY=your-key-here`
+
+2. Optional: Configure your preferred model:
+   - Set environment variable: `export OPENAI_MODEL=gpt-4o`
+
 ## Usage
+
+### Basic Usage
+
 ```bash
 python puppeteer_fast.py "quantum computing"
 ```
 
-## Project Structure
-```
-.
-├── config.py         # API key detection via .zshrc or .env
-├── db.py             # SQLite setup and logging
-├── puppeteer_fast.py # Main script with async evaluation
-├── scorer.py         # Keyword-based scoring system 
-├── strategies.json   # Prompt templates configuration
-├── README.md         # This documentation
-└── test_puppeteer.py # Unit tests
+### Advanced Options
+
+```bash
+python puppeteer_fast.py "machine learning" --model "gpt-4o" --temperature 0.5 --max-tokens 750
 ```
 
 ## How It Works
 
-Prompt Puppetry tests different prompt strategies against language models to find the most effective approach for a given topic. It:
+1. **Strategy Selection**: The tool loads prompt templates from `strategies.json`
+2. **Variation Generation**: Each strategy is modified with additional instructions
+3. **Async Execution**: Modified prompts are tested in parallel
+4. **Response Scoring**: Each response is scored based on:
+   - Text length
+   - Presence of positive signal phrases ("in summary", "key idea", etc.)
+   - Absence of negative signal phrases ("I don't know", "as an AI", etc.)
+5. **Database Logging**: All results are stored in SQLite for analysis
+6. **Early Termination**: Testing stops when a response exceeds the score threshold
 
-1. Takes a topic as input
-2. Tests multiple prompt strategies defined in strategies.json
-3. Evaluates responses using a keyword-based scoring system
-4. Logs results to a SQLite database
-5. Stops early when a successful prompt is found (above score threshold)
+## Project Structure
 
-## Extending
+```
+.
+├── README.md           # This documentation
+├── config.py           # Configuration and API key management
+├── db.py               # Database operations
+├── environment.yml     # Conda environment configuration
+├── puppeteer_fast.py   # Main script with async evaluation
+├── requirements.txt    # Python dependencies
+├── scorer.py           # Response evaluation logic 
+├── strategies.json     # Prompt template definitions
+└── test_puppeteer.py   # Unit tests
+```
 
-Add new prompt strategies in `strategies.json` to test different approaches. Modify the `KeywordScorer` class to adjust how responses are evaluated.
+## Custom Prompt Strategies
+
+Modify `strategies.json` to add your own prompt templates:
+
+```json
+{
+  "my_new_strategy": "Explain {topic} using these steps: 1) Define it 2) Give examples 3) Explain applications"
+}
+```
+
+The `{topic}` placeholder will be replaced with your query topic.
+
+## Customizing the Scorer
+
+Edit `scorer.py` to modify how responses are evaluated:
+
+```python
+class KeywordScorer:
+    # Add your own positive and negative signal phrases
+    positive = {"in summary", "key idea", "fundamental", "for example", "consequently"}
+    negative = {"i don't know", "cannot", "as an ai", "as an assistant"}
+    
+    # Modify scoring algorithm
+    def __call__(self, text: str) -> float:
+        t = text.lower()
+        score = 0.0
+        # Base score from length (0.004 points per character)
+        score += 0.004 * len(text)
+        # Bonus for positive signals
+        score += sum(t.count(k) for k in self.positive)
+        # Penalty for negative signals
+        score -= 2 * sum(t.count(k) for k in self.negative)
+        return round(score, 2)
+```
+
+## Testing
+
+```bash
+python -m unittest test_puppeteer.py
+```
+
+## License
+
+MIT License
+
+## Contributing
+
+Contributions welcome! Feel free to submit issues and pull requests.
