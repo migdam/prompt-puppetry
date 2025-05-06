@@ -76,6 +76,15 @@ python puppeteer_fast.py "machine learning" --model "gpt-4o" --temperature 0.5 -
 5. **Database Logging**: All results are stored in SQLite for analysis
 6. **Early Termination**: Testing stops when a response exceeds the score threshold
 
+## Troubleshooting
+
+If you encounter any issues with the command-line arguments, make sure to:
+
+1. **Put multi-word topics in quotes**: Always wrap your topic in quotes if it contains spaces, like `"quantum computing"`.
+2. **Check your API key**: Ensure your OpenAI API key is correctly set up in one of the supported methods.
+3. **Database permissions**: Make sure you have write permissions in the directory where the database is being created.
+4. **Model availability**: If you specify a custom model, ensure it's available in your OpenAI account.
+
 ## Project Structure
 
 ```
