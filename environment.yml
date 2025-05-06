@@ -1,0 +1,11 @@
+name: prompt-puppetry
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip>=22.0.4
+  - sqlite
+  - pip:
+    - openai>=1.0.0
+    - python-dotenv>=0.15.0
