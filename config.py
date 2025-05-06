@@ -12,12 +12,12 @@ OPENAI_RE = re.compile(r"^\s*export\s+OPENAI_API_KEY=['\"]*([^'\"]+)['\"]*", re.
 
 def get_cli_args():
     p = argparse.ArgumentParser(prog="prompt-puppetry")
-    p.add_argument("topic", help="The topic to generate prompts for")
+    # Note: topic is handled directly in puppeteer_fast.py using sys.argv
     p.add_argument("--db", type=Path, default=DEFAULT_DB)
     p.add_argument("--model", default=os.getenv("OPENAI_MODEL", "gpt-4o-mini"))
     p.add_argument("--temperature", type=float, default=0.7)
     p.add_argument("--max-tokens", type=int, default=500)
-    return p.parse_args()
+    return p.parse_args(args=[])  # Pass empty args to avoid parsing sys.argv
 
 def read_key_from_zshrc():
     try:
