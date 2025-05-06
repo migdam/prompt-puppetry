@@ -12,6 +12,7 @@ OPENAI_RE = re.compile(r"^\s*export\s+OPENAI_API_KEY=['\"]*([^'\"]+)['\"]*", re.
 
 def get_cli_args():
     p = argparse.ArgumentParser(prog="prompt-puppetry")
+    p.add_argument("topic", help="The topic to generate prompts for")
     p.add_argument("--db", type=Path, default=DEFAULT_DB)
     p.add_argument("--model", default=os.getenv("OPENAI_MODEL", "gpt-4o-mini"))
     p.add_argument("--temperature", type=float, default=0.7)
