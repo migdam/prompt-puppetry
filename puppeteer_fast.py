@@ -64,7 +64,5 @@ async def puppeteer(topic, goal=6.0):
         print("✗ No prompt succeeded.")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: puppeteer_fast.py <topic>")
-        sys.exit(1)
-    asyncio.run(puppeteer(sys.argv[1]))
+    args = get_cli_args()
+    asyncio.run(puppeteer(args.topic))
